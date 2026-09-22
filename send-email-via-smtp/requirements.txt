@@ -1,0 +1,2 @@
+# Required only for Excel-driven bulk sends (send_bulk.py).
+openpyxl>=3.1

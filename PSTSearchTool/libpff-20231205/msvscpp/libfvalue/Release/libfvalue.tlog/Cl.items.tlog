@@ -1,0 +1,16 @@
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_binary_data.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_binary_data.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_data_handle.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_data_handle.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_error.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_error.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_filetime.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_filetime.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_floating_point.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_floating_point.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_integer.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_integer.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_split_utf16_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_split_utf16_string.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_split_utf8_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_split_utf8_string.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_string.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_support.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_support.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_table.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_table.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_utf16_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_utf16_string.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_utf8_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_utf8_string.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_value.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_value.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_value_entry.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_value_entry.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfvalue\libfvalue_value_type.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfvalue\Release\libfvalue_value_type.obj

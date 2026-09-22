@@ -1,0 +1,12 @@
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_error.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_error.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_file.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_file.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_file_io_handle.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_file_io_handle.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_file_pool.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_file_pool.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_file_range.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_file_range.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_file_range_io_handle.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_file_range_io_handle.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_handle.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_handle.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_memory_range.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_memory_range.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_memory_range_io_handle.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_memory_range_io_handle.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_pool.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_pool.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_support.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_support.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libbfio\libbfio_system_string.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libbfio\Release\libbfio_system_string.obj

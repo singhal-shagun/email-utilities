@@ -1,0 +1,307 @@
+"""Send email via SMTP with optional multiple attachments.
+
+Usage:
+    python main.py
+
+Configuration is loaded from environment variables, optionally via
+`.env` / `.env.local` files (local overrides shared). Real environment
+variables always win over files. Never commit real credentials:
+`.env` and `.env.local` are gitignored — copy `.env.example` instead.
+
+Lookup order for each file: script directory, then current working
+directory. Within each directory: `.env` first, then `.env.local`
+overrides it.
+
+Environment variables:
+    SMTP_HOST (required), SMTP_PORT (default 587),
+    SMTP_USERNAME, SMTP_PASSWORD, FROM_ADDRESS (required),
+    TO_ADDRESSES (required unless CC/BCC given),
+    EMAIL_CC, EMAIL_BCC, EMAIL_SUBJECT, EMAIL_BODY,
+    EMAIL_ATTACHMENTS, EMAIL_USE_STARTTLS (default true),
+    EMAIL_USE_SSL (default false, auto-true on port 465),
+    SMTP_TIMEOUT (default 30)
+"""
+
+from __future__ import annotations
+
+import mimetypes
+import os
+import smtplib
+import sys
+import warnings
+from email.message import EmailMessage
+from pathlib import Path
+from typing import Iterable
+
+from helpers_smtp import (
+    DEFAULT_BODY,
+    DEFAULT_SMTP_PORT,
+    DEFAULT_SMTP_TIMEOUT,
+    DEFAULT_SUBJECT,
+    MAX_TOTAL_ATTACHMENT_BYTES,
+    _as_list,
+    _env_flag,
+    _env_tristate,
+    _load_dotenv_files,
+    _normalize_addresses,
+    _parse_dotenv_file,
+    _parse_port,
+    _parse_timeout,
+    _read_address_list_from_env,
+    _read_attachments_from_env,
+    _read_recipients_from_env,
+    _require_configured,
+    _resolve_security,
+    _resolve_use_ssl,
+    _resolve_use_starttls,
+    _split_list,
+    render_template,
+)
+
+# Re-export helpers so `from main import _split_list` etc. keeps working.
+__all__ = [
+    "build_message",
+    "send_email",
+    "main",
+    "DEFAULT_BODY",
+    "DEFAULT_SMTP_PORT",
+    "DEFAULT_SMTP_TIMEOUT",
+    "DEFAULT_SUBJECT",
+    "MAX_TOTAL_ATTACHMENT_BYTES",
+    "_as_list",
+    "_env_flag",
+    "_env_tristate",
+    "_load_dotenv_files",
+    "_normalize_addresses",
+    "_parse_dotenv_file",
+    "_parse_port",
+    "_parse_timeout",
+    "_read_address_list_from_env",
+    "_read_attachments_from_env",
+    "_read_recipients_from_env",
+    "_require_configured",
+    "_resolve_security",
+    "_resolve_use_ssl",
+    "_resolve_use_starttls",
+    "_split_list",
+    "render_template",
+]
+
+mimetypes.init()
+
+
+def build_message(
+    subject: str,
+    body: str,
+    from_address: str,
+    to_addresses: Iterable[str] | str,
+    attachments: Iterable[str] | str | os.PathLike[str] | None = None,
+    cc_addresses: Iterable[str] | str | None = None,
+    bcc_addresses: Iterable[str] | str | None = None,
+    body_html: str | None = None,
+) -> EmailMessage:
+    to_list = _normalize_addresses(to_addresses, "to_addresses")
+    if not to_list:
+        raise ValueError("At least one recipient address is required.")
+    cc_list = _normalize_addresses(cc_addresses, "cc_addresses")
+    bcc_list = _normalize_addresses(bcc_addresses, "bcc_addresses")
+
+    if not from_address or not from_address.strip():
+        raise ValueError("from_address is required.")
+    from_address = from_address.strip()
+    if "@" not in from_address:
+        raise ValueError(f"Invalid from_address: {from_address!r}")
+
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = from_address
+    message["To"] = ", ".join(to_list)
+    if cc_list:
+        message["Cc"] = ", ".join(cc_list)
+    # NOTE: Bcc is intentionally not added as a header to avoid leaking
+    # it to other recipients. It is only used for the SMTP envelope in
+    # send_email().
+    message.set_content(body)
+    if body_html:
+        # Multipart alternative: plain-text fallback + HTML version.
+        # Must be added before attachments (which convert to mixed).
+        message.add_alternative(body_html, subtype="html")
+
+    total_bytes = 0
+    for attachment in _as_list(attachments):
+        name = str(attachment).strip().strip("\"'")
+        if not name:
+            continue
+        attachment_path = Path(name)
+        if not attachment_path.is_file():
+            raise FileNotFoundError(f"Attachment not found: {attachment_path}")
+
+        size = attachment_path.stat().st_size
+        total_bytes += size
+        if size > 10 * 1024 * 1024:
+            warnings.warn(
+                f"Attachment {attachment_path.name} is {size / 1024 / 1024:.1f} MB; "
+                "large attachments may be rejected by the SMTP server.",
+                stacklevel=2,
+            )
+
+        mime_type, encoding = mimetypes.guess_type(attachment_path.name)
+        if encoding:
+            mime_type = None
+
+        if mime_type is None:
+            maintype, subtype = "application", "octet-stream"
+        else:
+            maintype, subtype = mime_type.split("/", 1)
+
+        data = attachment_path.read_bytes()
+        message.add_attachment(
+            data,
+            maintype=maintype,
+            subtype=subtype,
+            filename=attachment_path.name,
+        )
+
+    if total_bytes > MAX_TOTAL_ATTACHMENT_BYTES:
+        warnings.warn(
+            f"Total attachment size is {total_bytes / 1024 / 1024:.1f} MB, "
+            "which exceeds the typical 25 MB SMTP limit.",
+            stacklevel=2,
+        )
+
+    return message
+
+
+def send_email(
+    smtp_host: str,
+    smtp_port: int,
+    username: str,
+    password: str,
+    from_address: str,
+    to_addresses: Iterable[str] | str,
+    subject: str,
+    body: str,
+    attachments: Iterable[str] | str | os.PathLike[str] | None = None,
+    cc_addresses: Iterable[str] | str | None = None,
+    bcc_addresses: Iterable[str] | str | None = None,
+    use_starttls: bool = True,
+    use_ssl: bool = False,
+    timeout: int = DEFAULT_SMTP_TIMEOUT,
+    body_html: str | None = None,
+) -> None:
+    if use_ssl and use_starttls:
+        raise ValueError(
+            "use_ssl and use_starttls are mutually exclusive. "
+            "Use SSL (port 465) or STARTTLS (port 587), not both."
+        )
+    if not smtp_host or not smtp_host.strip():
+        raise ValueError("smtp_host is required.")
+    if not 1 <= smtp_port <= 65535:
+        raise ValueError(f"Invalid smtp_port: {smtp_port}")
+
+    to_list = _normalize_addresses(to_addresses, "to_addresses")
+    cc_list = _normalize_addresses(cc_addresses, "cc_addresses")
+    bcc_list = _normalize_addresses(bcc_addresses, "bcc_addresses")
+    if not (to_list or cc_list or bcc_list):
+        raise ValueError("At least one recipient (To/Cc/Bcc) is required.")
+
+    message = build_message(
+        subject, body, from_address, to_list, attachments, cc_list,
+        body_html=body_html,
+    )
+    # Bcc handled via envelope only.
+    envelope = to_list + cc_list + bcc_list
+
+    try:
+        if use_ssl:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=timeout) as server:
+                if username:
+                    server.login(username, password)
+                server.send_message(
+                    message, from_addr=from_address, to_addrs=envelope
+                )
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=timeout) as server:
+                server.ehlo()
+                if use_starttls:
+                    try:
+                        server.starttls()
+                    except smtplib.SMTPException as exc:
+                        raise RuntimeError(
+                            f"STARTTLS failed on {smtp_host}:{smtp_port}. "
+                            "If you use port 465, enable SSL instead "
+                            "(EMAIL_USE_SSL=1)."
+                        ) from exc
+                    server.ehlo()
+                if username:
+                    server.login(username, password)
+                server.send_message(
+                    message, from_addr=from_address, to_addrs=envelope
+                )
+    except (smtplib.SMTPException, OSError) as exc:
+        raise RuntimeError(
+            f"Failed to send email via {smtp_host}:{smtp_port}: {exc}"
+        ) from exc
+
+
+def main() -> None:
+    _load_dotenv_files()
+
+    smtp_port = _parse_port(os.getenv("SMTP_PORT", str(DEFAULT_SMTP_PORT)))
+    use_ssl, use_starttls = _resolve_security(smtp_port)
+    timeout = _parse_timeout(os.getenv("SMTP_TIMEOUT", str(DEFAULT_SMTP_TIMEOUT)))
+
+    smtp_host = _require_configured(
+        os.getenv("SMTP_HOST", ""), "SMTP_HOST", {"smtp.example.com"}
+    )
+    from_address = _require_configured(
+        os.getenv("FROM_ADDRESS", ""),
+        "FROM_ADDRESS",
+        {"your-email@example.com"},
+    )
+    # Empty username/password allowed for local relays (MailHog, etc.).
+    # Real values come from env / .env / .env.local, never from this file.
+    username = os.getenv("SMTP_USERNAME", "")
+    password = os.getenv("SMTP_PASSWORD", "")
+
+    recipients = _read_recipients_from_env()
+    cc_recipients = _read_address_list_from_env("EMAIL_CC", [])
+    bcc_recipients = _read_address_list_from_env("EMAIL_BCC", [])
+    # Fail fast instead of sending with an empty To header.
+    all_recipients = _normalize_addresses(
+        recipients + cc_recipients + bcc_recipients, "TO_ADDRESSES/EMAIL_CC/EMAIL_BCC"
+    )
+    if not all_recipients:
+        raise ValueError(
+            "No recipients configured. Set TO_ADDRESSES in .env/.env.local "
+            "or environment (comma/semicolon separated)."
+        )
+
+    subject = os.getenv("EMAIL_SUBJECT", DEFAULT_SUBJECT)
+    body = os.getenv("EMAIL_BODY", DEFAULT_BODY)
+    attachments = _read_attachments_from_env()
+
+    send_email(
+        smtp_host=smtp_host,
+        smtp_port=smtp_port,
+        username=username,
+        password=password,
+        from_address=from_address,
+        to_addresses=recipients,
+        cc_addresses=cc_recipients,
+        bcc_addresses=bcc_recipients,
+        subject=subject,
+        body=body,
+        attachments=attachments,
+        use_starttls=use_starttls,
+        use_ssl=use_ssl,
+        timeout=timeout,
+    )
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, FileNotFoundError, RuntimeError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)

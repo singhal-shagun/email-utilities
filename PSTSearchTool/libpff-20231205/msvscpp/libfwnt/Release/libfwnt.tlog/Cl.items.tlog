@@ -1,0 +1,14 @@
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_access_control_entry.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_access_control_entry.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_access_control_list.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_access_control_list.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_bit_stream.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_bit_stream.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_debug.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_debug.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_error.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_error.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_huffman_tree.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_huffman_tree.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_locale_identifier.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_locale_identifier.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_lznt1.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_lznt1.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_lzx.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_lzx.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_lzxpress.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_lzxpress.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_notify.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_notify.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_security_descriptor.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_security_descriptor.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_security_identifier.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_security_identifier.obj
+D:\Tutorials\Python\PSTSearchTool\libpff-20231205\libfwnt\libfwnt_support.c;D:\Tutorials\Python\PSTSearchTool\libpff-20231205\msvscpp\libfwnt\Release\libfwnt_support.obj
